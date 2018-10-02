@@ -2,10 +2,15 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>Drive Digger</title>
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
   </head>
   <body>
-    <h1>Hello World!</h1>
+    <h1 class="title">Drive Digger</h1>
+    <p>
+      <button type="button" id="openDrive">Select Drive</button>
+      <input type="file" id="driveInput" webkitdirectory style="display: none;" />
+    </p>
     <!-- All of the Node.js APIs are available in this renderer process. -->
     We are using Node.js <script>document.write(process.versions.node)</script>,
     Chromium <script>document.write(process.versions.chrome)</script>,
