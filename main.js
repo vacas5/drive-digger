@@ -1,5 +1,6 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, dialog} = require('electron')
+const fs = require('fs');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -7,13 +8,18 @@ let mainWindow
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600})
+  mainWindow = new BrowserWindow({width: 1000, height: 600, show: false})
+
+  // correct flash of nothingness
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
+  })
 
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -46,5 +52,26 @@ app.on('activate', function () {
   }
 })
 
+function verifyDrive(paths) {
+  const path = paths[0];
+
+  console.log(fs.lstatSync(path));
+  return path && fs.lstatSync(path).isBlockDevice()
+}
+
+function persistDriveContents(paths = []) {
+  if (verifyDrive(paths)) {
+    console.log('yeah we got a drive')
+  } else {
+    console.log('aint no drive');
+  }
+}
+
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+exports.selectDrive = () => {
+  dialog.showOpenDialog({
+    properties: ['openDirectory'],
+    title: 'Select Drive'
+  }, persistDriveContents)
+}
